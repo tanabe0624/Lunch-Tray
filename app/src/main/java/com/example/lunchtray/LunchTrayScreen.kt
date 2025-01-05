@@ -32,9 +32,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.lunchtray.datasource.DataSource
+import com.example.lunchtray.model.OrderUiState
+import com.example.lunchtray.ui.AccompanimentMenuScreen
 import com.example.lunchtray.ui.BaseMenuScreen
+import com.example.lunchtray.ui.CheckoutScreen
 import com.example.lunchtray.ui.EntreeMenuScreen
 import com.example.lunchtray.ui.OrderViewModel
+import com.example.lunchtray.ui.SideDishMenuScreen
 import com.example.lunchtray.ui.StartOrderScreen
 
 // TODO: Screen enum
@@ -80,15 +84,50 @@ fun LunchTrayApp(
             composable(route = LunchTrayScreen.Entree.name) {
                 EntreeMenuScreen(
                     options = DataSource.entreeMenuItems,
-                    onCancelButtonClicked = {},
-                    onNextButtonClicked = {},
+                    onCancelButtonClicked = {navController.popBackStack(LunchTrayScreen.Start.name, false)},
+                    onNextButtonClicked = {navController.navigate(LunchTrayScreen.Side.name)},
                     onSelectionChanged = {},
                     modifier = Modifier
                         .padding(dimensionResource(R.dimen.padding_medium))
                         .verticalScroll(rememberScrollState())
+                )
+            }
+            composable(route = LunchTrayScreen.Side.name) {
+                SideDishMenuScreen(
+                    options = DataSource.sideDishMenuItems,
+                    onCancelButtonClicked = {navController.popBackStack(LunchTrayScreen.Start.name, false)},
+                    onNextButtonClicked = {navController.navigate(LunchTrayScreen.Accompaniment.name)},
+                    onSelectionChanged = {},
+                    modifier = Modifier
 
-
-
+                )
+            }
+            composable(route = LunchTrayScreen.Accompaniment.name) {
+                AccompanimentMenuScreen(
+                    options = DataSource.accompanimentMenuItems,
+                    onNextButtonClicked = {navController.popBackStack(LunchTrayScreen.Start.name, false)},
+                    onCancelButtonClicked = {navController.navigate(LunchTrayScreen.Start.name)},
+                    onSelectionChanged = {},
+                    modifier = Modifier
+                        .padding(dimensionResource(R.dimen.padding_medium))
+                        .verticalScroll(rememberScrollState())
+                )
+            }
+            composable(route = LunchTrayScreen.Checkout.name) {
+                CheckoutScreen(
+                    orderUiState = OrderUiState(
+                        entree = DataSource.entreeMenuItems[0],
+                        sideDish = DataSource.sideDishMenuItems[0],
+                        accompaniment = DataSource.accompanimentMenuItems[0],
+                        itemTotalPrice = 15.00,
+                        orderTax = 1.00,
+                        orderTotalPrice = 16.00
+                    ),
+                    onNextButtonClicked = {},
+                    onCancelButtonClicked = {navController.popBackStack(LunchTrayScreen.Start.name, false)},
+                    modifier = Modifier
+                        .padding(dimensionResource(R.dimen.padding_medium))
+                        .verticalScroll(rememberScrollState())
                 )
             }
         }
